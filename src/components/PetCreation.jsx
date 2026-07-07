@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { CatSprite, DogSprite, PET_COLORS } from '../svg/Sprites';
+import AnimatedPet from '../svg/AnimatedPet';
 import './PetCreation.css';
 
 const STEPS = ['species', 'fur', 'color'];

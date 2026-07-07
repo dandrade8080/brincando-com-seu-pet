@@ -1,0 +1,210 @@
+.grass-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.sky-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #E3F2FD 0%, #B3E5FC 40%, #81D4FA 100%);
+}
+
+.clouds {
+  position: absolute;
+  inset: 0;
+}
+
+.cloud {
+  position: absolute;
+  background: #FFF;
+  border-radius: 50%;
+  opacity: 0.8;
+  border: 3px solid #000;
+}
+
+.cloud::before,
+.cloud::after {
+  content: '';
+  position: absolute;
+  background: #FFF;
+  border-radius: 50%;
+  border: 3px solid #000;
+}
+
+.cloud-1 {
+  width: 80px;
+  height: 40px;
+  top: 12%;
+  left: 15%;
+  animation: cloudFloat1 20s linear infinite;
+}
+
+.cloud-1::before {
+  width: 45px;
+  height: 45px;
+  top: -25px;
+  left: 12px;
+}
+
+.cloud-1::after {
+  width: 35px;
+  height: 35px;
+  top: -15px;
+  left: 40px;
+}
+
+.cloud-2 {
+  width: 70px;
+  height: 35px;
+  top: 8%;
+  left: 60%;
+  animation: cloudFloat2 25s linear infinite;
+}
+
+.cloud-2::before {
+  width: 40px;
+  height: 40px;
+  top: -22px;
+  left: 10px;
+}
+
+.cloud-2::after {
+  width: 30px;
+  height: 30px;
+  top: -12px;
+  left: 35px;
+}
+
+.cloud-3 {
+  width: 60px;
+  height: 30px;
+  top: 20%;
+  left: 40%;
+  animation: cloudFloat3 22s linear infinite;
+}
+
+.cloud-3::before {
+  width: 35px;
+  height: 35px;
+  top: -18px;
+  left: 8px;
+}
+
+.cloud-3::after {
+  width: 28px;
+  height: 28px;
+  top: -10px;
+  left: 30px;
+}
+
+@keyframes cloudFloat1 {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(40px); }
+}
+
+@keyframes cloudFloat2 {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(-30px); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes cloudFloat3 {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(20px); }
+  100% { transform: translateX(0); }
+}
+
+.grass-layer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 25%;
+}
+
+.grass-blade {
+  position: absolute;
+  bottom: 0;
+  width: 3px;
+  height: 40px;
+  background: linear-gradient(180deg, #66BB6A, #43A047);
+  border-radius: 2px 2px 0 0;
+  border: 1.5px solid #000;
+  transform-origin: bottom center;
+  animation: grassSway 2s ease-in-out infinite alternate;
+}
+
+@keyframes grassSway {
+  0% { transform: rotate(-8deg); }
+  100% { transform: rotate(8deg); }
+}
+
+.flowers {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 20%;
+}
+
+.flower {
+  position: absolute;
+  font-size: 28px;
+  animation: flowerBob 3s ease-in-out infinite alternate;
+  filter: drop-shadow(1px 2px 0 rgba(0,0,0,0.3));
+}
+
+@keyframes flowerBob {
+  0% { transform: translateY(0) rotate(-3deg); }
+  100% { transform: translateY(-5px) rotate(3deg); }
+}
+
+.flower-2 {
+  animation-delay: -1s;
+}
+
+.flower-3 {
+  animation-delay: -2s;
+}
+
+.ground-gradient {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30%;
+  background: linear-gradient(180deg, transparent 0%, rgba(129,199,132,0.4) 50%, #81C784 100%);
+  border-top: 4px solid #000;
+}
+
+/* Partículas */
+.heart-particle {
+  position: absolute;
+  font-size: 20px;
+  animation: heartFloat 1s ease-out forwards;
+  pointer-events: none;
+  z-index: 15;
+}
+
+@keyframes heartFloat {
+  0% { transform: translateY(0) scale(0.5); opacity: 1; }
+  100% { transform: translateY(-60px) scale(1.5); opacity: 0; }
+}
+
+.sparkle-particle {
+  position: absolute;
+  font-size: 16px;
+  color: #FFD700;
+  animation: sparklePop 0.8s ease-out forwards;
+  pointer-events: none;
+  z-index: 15;
+}
+
+@keyframes sparklePop {
+  0% { transform: scale(0) rotate(0deg); opacity: 1; }
+  50% { transform: scale(1.5) rotate(180deg); opacity: 0.8; }
+  100% { transform: scale(0) rotate(360deg); opacity: 0; }
+}

@@ -2,8 +2,10 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import {
   HouseSprite, BedSprite, BowlSprite,
   LitterBoxSprite, MatSprite,
-  CatSprite, DogSprite, DoorSprite, HoleSprite,
+  DoorSprite, HoleSprite,
 } from '../svg/Sprites';
+import AnimatedPet from '../svg/AnimatedPet';
+import { GrassBackground } from '../svg/Environment';
 import './MainFloor.css';
 
 const OBJECT_POSITIONS = {
@@ -23,6 +25,8 @@ export default function MainFloor({ gameState, setGameState, audio, speech }) {
   const petColor = pet.color;
 
   const [petPos, setPetPos] = useState(PET_START);
+  const [petDirection, setPetDirection] = useState('right');
+  const [petAnimState, setPetAnimState] = useState('idle');
   const [isWalking, setIsWalking] = useState(false);
   const [challenge, setChallenge] = useState(null);
   const [showWarning, setShowWarning] = useState(false);
@@ -61,6 +65,9 @@ export default function MainFloor({ gameState, setGameState, audio, speech }) {
     const endT = parseFloat(targetPos.top);
 
     setIsWalking(true);
+    setPetAnimState('walking');
+    if (endL > startL) setPetDirection('right');
+    else setPetDirection('left');
 
     const needsChallenge =
       (pet.species === 'cat' && targetKey === 'litterBox') ||
@@ -94,6 +101,7 @@ export default function MainFloor({ gameState, setGameState, audio, speech }) {
           });
           setShowWarning(true);
           setIsWalking(false);
+          setPetAnimState('idle');
           clearInterval(walkTimerRef.current);
           walkTimerRef.current = null;
           speech.speak('Cuidado! Um buraco! Toque no seu pet para pular!');
@@ -107,6 +115,7 @@ export default function MainFloor({ gameState, setGameState, audio, speech }) {
         clearInterval(walkTimerRef.current);
         walkTimerRef.current = null;
         setIsWalking(false);
+        setPetAnimState('idle');
         setPetPos(targetPos);
         setChallenge(null);
         setShowWarning(false);
@@ -147,6 +156,7 @@ export default function MainFloor({ gameState, setGameState, audio, speech }) {
       setChallenge(null);
       setShowWarning(false);
       setIsWalking(false);
+      setPetAnimState('idle');
       if (walkTimerRef.current) {
         clearInterval(walkTimerRef.current);
         walkTimerRef.current = null;
@@ -296,10 +306,7 @@ export default function MainFloor({ gameState, setGameState, audio, speech }) {
           <div className="phase-interaction">
             <h2 className="phase-title">{animalEmoji} Dormindo!</h2>
             <div style={{ margin: '16px 0', animation: 'sleepBreathe 2s ease-in-out infinite' }}>
-              {pet.species === 'cat'
-                ? <CatSprite color={petColor?.hex || '#9E9E9E'} fur={pet.fur || 'short'} size={140} />
-                : <DogSprite color={petColor?.hex || '#9E9E9E'} fur={pet.fur || 'short'} size={140} />
-              }
+              <AnimatedPet species={pet.species} color={petColor?.hex || '#F4A460'} fur={pet.fur || 'short'} size={140} state="sleeping" />
             </div>
             <p className="phase-animation">Zzz Zzz Zzz...</p>
             <button className="close-phase-btn" onClick={closePhase}>ACORDAR</button>
@@ -322,10 +329,7 @@ export default function MainFloor({ gameState, setGameState, audio, speech }) {
               alignItems: 'center',
               gap: 16,
             }}>
-              {pet.species === 'cat'
-                ? <CatSprite color={petColor?.hex || '#9E9E9E'} fur={pet.fur || 'short'} size={160} />
-                : <DogSprite color={petColor?.hex || '#9E9E9E'} fur={pet.fur || 'short'} size={160} />
-              }
+              <AnimatedPet species={pet.species} color={petColor?.hex || '#F4A460'} fur={pet.fur || 'short'} size={160} state="idle" />
               <p className="phase-animation">Seu pet está confortável na casinha!</p>
             </div>
             <button className="close-phase-btn" onClick={closePhase} style={{ marginTop: 16 }}>
@@ -369,6 +373,7 @@ export default function MainFloor({ gameState, setGameState, audio, speech }) {
 
   return (
     <div className="main-floor">
+      <GrassBackground />
       <div className="floor-bg" />
 
       {objectEntries.map(({ key, label, Sprite }) => {
@@ -445,11 +450,14 @@ export default function MainFloor({ gameState, setGameState, audio, speech }) {
           aria-label={challenge ? 'Toque para pular!' : `Seu ${pet.species === 'cat' ? 'gato' : 'cachorro'}`}
           onFocus={() => !challenge && speech.speak(`Este é seu ${pet.species === 'cat' ? 'gatinho' : 'cachorrinho'}. Toque nele para ouvir o som.`)}
         >
-          {pet.species === 'cat' ? (
-            <CatSprite color={petColor?.hex || '#9E9E9E'} fur={pet.fur || 'short'} size={petSize} />
-          ) : (
-            <DogSprite color={petColor?.hex || '#9E9E9E'} fur={pet.fur || 'short'} size={petSize} />
-          )}
+          <AnimatedPet
+            species={pet.species}
+            color={petColor?.hex || '#F4A460'}
+            fur={pet.fur || 'short'}
+            size={petSize}
+            state={isWalking ? 'walking' : 'idle'}
+            direction={petDirection}
+          />
           {challenge && (
             <div className="click-here-indicator">TOQUE!</div>
           )}

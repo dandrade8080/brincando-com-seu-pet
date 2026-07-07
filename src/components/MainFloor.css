@@ -3,16 +3,14 @@
   height: 100%;
   position: relative;
   overflow: hidden;
-  background: #FFFFFF;
+  background: #E3F2FD;
 }
 
 .floor-bg {
   position: absolute;
   inset: 0;
-  background-image:
-    repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(0,0,0,0.06) 60px, rgba(0,0,0,0.06) 61px),
-    repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(0,0,0,0.06) 60px, rgba(0,0,0,0.06) 61px);
   z-index: 0;
+  pointer-events: none;
 }
 
 .floor-object {

@@ -1,9 +1,10 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import {
   HouseSprite, BedSprite, BowlSprite,
-  CatSprite, DogSprite, DoorSprite,
+  DoorSprite,
   SecondAnimalSprite, ToyBallSprite, ToyBoneSprite, CushionSprite,
 } from '../svg/Sprites';
+import AnimatedPet from '../svg/AnimatedPet';
 import './PlayRoom.css';
 
 const ROOM_POSITIONS = {
@@ -394,19 +395,13 @@ export default function PlayRoom({ gameState, setGameState, audio, speech }) {
             aria-label={`Seu ${species === 'cat' ? 'gato' : 'cachorro'} - arraste!`}
             onFocus={() => speech.speak(`Seu ${species === 'cat' ? 'gatinho' : 'cachorrinho'}. Arraste ele pela sala!`)}
           >
-            {species === 'cat' ? (
-              <CatSprite
-                color={petColor?.hex || '#9E9E9E'}
-                fur={pet.fur || 'short'}
-                size={100}
-              />
-            ) : (
-              <DogSprite
-                color={petColor?.hex || '#9E9E9E'}
-                fur={pet.fur || 'short'}
-                size={100}
-              />
-            )}
+            <AnimatedPet
+              species={species}
+              color={petColor?.hex || '#F4A460'}
+              fur={pet.fur || 'short'}
+              size={100}
+              state={isDragging ? 'happy' : animState === 'sleep' ? 'sleeping' : animState === 'eat' ? 'eating' : 'idle'}
+            />
             {animState === 'eat' && <div className="anim-badge">Comendo!</div>}
             {animState === 'drink' && <div className="anim-badge">Bebendo!</div>}
             {animState === 'play' && <div className="anim-badge">Brincando!</div>}
@@ -462,11 +457,13 @@ export default function PlayRoom({ gameState, setGameState, audio, speech }) {
                   position: 'relative',
                 }}
               >
-                {species === 'cat' ? (
-                  <CatSprite color={petColor?.hex || '#F4A460'} fur={pet.fur || 'short'} size={140} />
-                ) : (
-                  <DogSprite color={petColor?.hex || '#B0A8A0'} fur={pet.fur || 'short'} size={140} />
-                )}
+                <AnimatedPet
+                  species={species}
+                  color={petColor?.hex || '#F4A460'}
+                  fur={pet.fur || 'short'}
+                  size={140}
+                  state={pettingPet ? 'happy' : 'idle'}
+                />
                 <span style={{ fontSize: 'var(--font-size-sm)', color: '#000', fontWeight: 700, marginTop: 4 }}>
                   Fazer carinho
                 </span>
@@ -554,11 +551,13 @@ export default function PlayRoom({ gameState, setGameState, audio, speech }) {
                   gap: 4,
                   animation: 'sleepBreathe 2s ease-in-out infinite',
                 }}>
-                  {species === 'cat' ? (
-                    <CatSprite color={petColor?.hex || '#F4A460'} fur={pet.fur || 'short'} size={100} />
-                  ) : (
-                    <DogSprite color={petColor?.hex || '#B0A8A0'} fur={pet.fur || 'short'} size={100} />
-                  )}
+                  <AnimatedPet
+                    species={species}
+                    color={petColor?.hex || '#F4A460'}
+                    fur={pet.fur || 'short'}
+                    size={100}
+                    state="sleeping"
+                  />
                   <span style={{ fontSize: 18, color: '#000', fontWeight: 700 }}>Zzz Zzz...</span>
                 </div>
               )}

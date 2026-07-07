@@ -1,0 +1,177 @@
+/* ============================================================
+   Animações dos pets: idle (respiração), walk (caminhada),
+   cauda balançando, orelhas mexendo, sombra pulsando
+   ============================================================ */
+
+.pet-sprite {
+  display: block;
+}
+
+/* ---- IDLE (parado, respirando) ---- */
+.pet-sprite.state-idle .pet-body {
+  animation: idleBreathe 2s ease-in-out infinite;
+}
+
+.pet-sprite.state-idle .pet-head {
+  animation: idleNod 3s ease-in-out infinite;
+}
+
+.pet-sprite.state-idle .pet-tail {
+  animation: tailWagGentle 1.8s ease-in-out infinite;
+  transform-origin: 78px 82px;
+}
+
+.pet-sprite.state-idle .pet-ears {
+  animation: earFlopIdle 2.5s ease-in-out infinite;
+  transform-origin: 50px 20px;
+}
+
+/* ---- WALKING (caminhando) ---- */
+.pet-sprite.state-walking {
+  animation: walkBounce 0.35s ease-in-out infinite alternate;
+}
+
+.pet-sprite.state-walking .pet-front-legs {
+  animation: walkLegsFront 0.35s ease-in-out infinite alternate;
+  transform-origin: 50px 90px;
+}
+
+.pet-sprite.state-walking .pet-back-legs {
+  animation: walkLegsBack 0.35s ease-in-out infinite alternate;
+  transform-origin: 50px 100px;
+}
+
+.pet-sprite.state-walking .pet-tail {
+  animation: tailWagFast 0.3s ease-in-out infinite alternate;
+  transform-origin: 78px 82px;
+}
+
+.pet-sprite.state-walking .pet-ears {
+  animation: earBounceWalk 0.35s ease-in-out infinite alternate;
+  transform-origin: 50px 20px;
+}
+
+.pet-sprite.state-walking .pet-head {
+  animation: headBobWalk 0.35s ease-in-out infinite alternate;
+}
+
+/* ---- EATING (comendo) ---- */
+.pet-sprite.state-eating .pet-head {
+  animation: eatNod 0.3s ease-in-out infinite alternate;
+}
+
+.pet-sprite.state-eating .pet-tail {
+  animation: tailWagHappy 0.4s ease-in-out infinite alternate;
+  transform-origin: 78px 82px;
+}
+
+/* ---- SLEEPING (dormindo) ---- */
+.pet-sprite.state-sleeping {
+  opacity: 0.9;
+}
+
+.pet-sprite.state-sleeping .pet-body {
+  animation: sleepBreathe 2.5s ease-in-out infinite;
+}
+
+/* ---- HAPPY (feliz) ---- */
+.pet-sprite.state-happy {
+  animation: happyJump 0.5s ease-in-out infinite alternate;
+}
+
+.pet-sprite.state-happy .pet-tail {
+  animation: tailWagHappy 0.25s ease-in-out infinite alternate;
+  transform-origin: 78px 82px;
+}
+
+.pet-sprite.state-happy .pet-ears {
+  animation: earBounceWalk 0.4s ease-in-out infinite alternate;
+}
+
+/* ---- SHADOW ---- */
+.pet-shadow {
+  transition: all 0.3s ease;
+}
+
+.pet-sprite.state-walking .pet-shadow {
+  animation: shadowPulse 0.35s ease-in-out infinite alternate;
+}
+
+/* =========== KEYFRAMES =========== */
+
+@keyframes idleBreathe {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(1.04); }
+}
+
+@keyframes idleNod {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-1.5px); }
+}
+
+@keyframes tailWagGentle {
+  0%, 100% { transform: rotate(-8deg); }
+  50% { transform: rotate(8deg); }
+}
+
+@keyframes tailWagFast {
+  0%, 100% { transform: rotate(-15deg); }
+  50% { transform: rotate(15deg); }
+}
+
+@keyframes tailWagHappy {
+  0%, 100% { transform: rotate(-20deg); }
+  25% { transform: rotate(20deg); }
+  50% { transform: rotate(-15deg); }
+  75% { transform: rotate(15deg); }
+}
+
+@keyframes earFlopIdle {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-3deg); }
+}
+
+@keyframes earBounceWalk {
+  0%, 100% { transform: rotate(0deg) translateY(0); }
+  50% { transform: rotate(5deg) translateY(-3px); }
+}
+
+@keyframes walkBounce {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-5px); }
+}
+
+@keyframes walkLegsFront {
+  0% { transform: rotate(-3deg); }
+  100% { transform: rotate(3deg); }
+}
+
+@keyframes walkLegsBack {
+  0% { transform: rotate(3deg); }
+  100% { transform: rotate(-3deg); }
+}
+
+@keyframes headBobWalk {
+  0% { transform: translateY(0) rotate(0deg); }
+  100% { transform: translateY(-2px) rotate(2deg); }
+}
+
+@keyframes eatNod {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(3px); }
+}
+
+@keyframes sleepBreathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.025); }
+}
+
+@keyframes happyJump {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-8px); }
+}
+
+@keyframes shadowPulse {
+  0% { transform: scaleX(1); opacity: 0.15; }
+  100% { transform: scaleX(0.8); opacity: 0.08; }
+}
