@@ -40,6 +40,10 @@ export default function PlayRoom({ gameState, setGameState, audio, speech }) {
   const [insideHouse, setInsideHouse] = useState(false);
   const [toyPositions, setToyPositions] = useState([...TOYS]);
   const [pettingPet, setPettingPet] = useState(false);
+  const [insideActivity, setInsideActivity] = useState(null);
+  const [houseHearts, setHouseHearts] = useState(false);
+  const [houseBowlFood, setHouseBowlFood] = useState([true, true, true, true]);
+  const [houseBallPos, setHouseBallPos] = useState({ x: 0, y: 0 });
 
   const roomRef = useRef(null);
   const dragOffset = useRef({ x: 0, y: 0 });
@@ -206,19 +210,80 @@ export default function PlayRoom({ gameState, setGameState, audio, speech }) {
 
   const handlePetInsideHouse = useCallback(() => {
     setPettingPet(true);
+    setInsideActivity('petting');
+    setHouseHearts(true);
     if (species === 'cat') {
-      audio.sfx.meow();
-      speech.speak('Miau! Seu gatinho está feliz dentro da casinha!');
+      audio.sfx.purr();
+      speech.speak('Miaaau! Seu gatinho adora carinho!');
     } else {
       audio.sfx.bark();
-      speech.speak('Au au! Seu cachorrinho está feliz dentro da casinha!');
+      speech.speak('Au au! Seu cachorrinho adora carinho!');
     }
-    setTimeout(() => setPettingPet(false), 800);
+    setTimeout(() => {
+      setPettingPet(false);
+      setHouseHearts(false);
+      setInsideActivity(null);
+    }, 1500);
   }, [species, audio, speech]);
+
+  const handleFeedInside = useCallback(() => {
+    if (insideActivity) return;
+    setInsideActivity('feeding');
+    speech.speak('Hora de comer! Toque na ração para dar ao seu pet.');
+  }, [insideActivity, speech]);
+
+  const handleEatFromBowl = useCallback((index) => {
+    if (insideActivity !== 'feeding') return;
+    audio.sfx.eat();
+    setHouseBowlFood(prev => prev.map((v, i) => i === index ? false : v));
+    const remaining = houseBowlFood.filter((v, i) => i !== index && v).length;
+    if (remaining === 0) {
+      speech.speak('Seu pet comeu tudo! Está feliz e satisfeito!');
+      setTimeout(() => {
+        setInsideActivity(null);
+        setHouseBowlFood([true, true, true, true]);
+      }, 1500);
+    } else {
+      speech.speak('Nhac nhac! Que delícia!');
+    }
+  }, [insideActivity, audio, speech, houseBowlFood]);
+
+  const handlePlayInside = useCallback(() => {
+    if (insideActivity) return;
+    setInsideActivity('playing');
+    audio.sfx.ballBounce();
+    const nx = Math.random() * 60 - 30;
+    const ny = Math.random() * 40 - 50;
+    setHouseBallPos({ x: nx, y: ny });
+    speech.speak('A bolinha pulou! Toque nela para brincar!');
+  }, [insideActivity, audio, speech]);
+
+  const handleBallBounceInside = useCallback(() => {
+    if (insideActivity !== 'playing') return;
+    audio.sfx.ballBounce();
+    const nx = Math.random() * 80 - 40;
+    const ny = Math.random() * 50 - 60;
+    setHouseBallPos({ x: nx, y: ny });
+    speech.speak('Boing! A bolinha pulou de novo!');
+  }, [insideActivity, audio, speech]);
+
+  const handleSleepInside = useCallback(() => {
+    if (insideActivity) return;
+    setInsideActivity('sleeping');
+    if (species === 'cat') audio.sfx.purr();
+    else audio.sfx.snore();
+    speech.speak('Shhh! Seu pet está dormindo na caminha. Que fofo!');
+    setTimeout(() => {
+      setInsideActivity(null);
+    }, 3000);
+  }, [insideActivity, species, audio, speech]);
 
   const handleExitHouse = useCallback(() => {
     setHouseExpanded(false);
     setInsideHouse(false);
+    setInsideActivity(null);
+    setHouseHearts(false);
+    setHouseBowlFood([true, true, true, true]);
     speech.speak('Saiu da casinha. Continue brincando!');
   }, [speech]);
 
@@ -377,45 +442,212 @@ export default function PlayRoom({ gameState, setGameState, audio, speech }) {
             <h2 className="house-interior-title">
               {species === 'cat' ? '🐱' : '🐶'} Dentro da casinha!
             </h2>
-            <div
-              className="house-interior-pet"
-              onClick={handlePetInsideHouse}
-              role="button"
-              tabIndex={0}
-              aria-label="Toque no seu pet para fazer carinho"
-              style={{ transform: pettingPet ? 'scale(1.2)' : 'scale(1)' }}
-            >
-              {species === 'cat' ? (
-                <CatSprite
-                  color={petColor?.hex || '#9E9E9E'}
-                  fur={pet.fur || 'short'}
-                  size={180}
-                />
-              ) : (
-                <DogSprite
-                  color={petColor?.hex || '#9E9E9E'}
-                  fur={pet.fur || 'short'}
-                  size={180}
-                />
-              )}
-              <span style={{ fontSize: 'var(--font-size-md)', color: '#000', fontWeight: 700 }}>
-                Toque para fazer carinho!
-              </span>
-            </div>
-            {pettingPet && (
-              <div style={{
-                fontSize: 'var(--font-size-md)',
-                color: '#000',
-                fontWeight: 700,
-                animation: 'heartsFloat 1s ease-in-out infinite alternate',
-              }}>
-                &#10084; &#10084; &#10084;
+
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 14,
+              width: '100%',
+            }}>
+              {/* Pet com carinho */}
+              <div
+                className="house-interior-pet"
+                onClick={handlePetInsideHouse}
+                role="button"
+                tabIndex={0}
+                aria-label="Toque no seu pet para fazer carinho"
+                style={{
+                  transform: pettingPet ? 'scale(1.2)' : 'scale(1)',
+                  position: 'relative',
+                }}
+              >
+                {species === 'cat' ? (
+                  <CatSprite color={petColor?.hex || '#F4A460'} fur={pet.fur || 'short'} size={140} />
+                ) : (
+                  <DogSprite color={petColor?.hex || '#B0A8A0'} fur={pet.fur || 'short'} size={140} />
+                )}
+                <span style={{ fontSize: 'var(--font-size-sm)', color: '#000', fontWeight: 700, marginTop: 4 }}>
+                  Fazer carinho
+                </span>
+                {houseHearts && (
+                  <div style={{
+                    position: 'absolute', top: -20, fontSize: 24,
+                    animation: 'heartsFloat 1s ease-in-out infinite alternate',
+                  }}>
+                    &#10084; &#10084; &#10084;
+                  </div>
+                )}
               </div>
-            )}
+
+              {/* Bolinha (brincar) */}
+              {insideActivity === 'playing' && (
+                <div
+                  onClick={handleBallBounceInside}
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Toque na bolinha para brincar"
+                  style={{
+                    position: 'relative',
+                    left: houseBallPos.x,
+                    top: houseBallPos.y,
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: 4,
+                  }}
+                >
+                  <ToyBallSprite size={50} />
+                  <span style={{ fontSize: 14, color: '#000', fontWeight: 700 }}>Toque na bolinha!</span>
+                </div>
+              )}
+
+              {/* Comida dentro da casinha */}
+              {insideActivity === 'feeding' && (
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '8px 16px',
+                  background: '#FFF8E1',
+                  border: '3px solid #000',
+                  borderRadius: 16,
+                }}>
+                  <span style={{ fontSize: 'var(--font-size-sm)', color: '#000', fontWeight: 700 }}>
+                    Ração gostosa!
+                  </span>
+                  <div className="food-pieces">
+                    {houseBowlFood.map((active, i) => (
+                      <div
+                        key={i}
+                        className={`food-piece ${!active ? 'gone' : ''}`}
+                        onClick={() => active && handleEatFromBowl(i)}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={active ? 'Ração. Toque para comer.' : 'Ração comida'}
+                        style={{
+                          width: 32,
+                          height: 32,
+                          background: '#8B4513',
+                          border: '3px solid #000',
+                          borderRadius: '50%',
+                          cursor: active ? 'pointer' : 'default',
+                          transition: 'all 0.4s ease',
+                          opacity: active ? 1 : 0,
+                          transform: active ? 'scale(1)' : 'scale(0)',
+                        }}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Dormindo */}
+              {insideActivity === 'sleeping' && (
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: 4,
+                  animation: 'sleepBreathe 2s ease-in-out infinite',
+                }}>
+                  {species === 'cat' ? (
+                    <CatSprite color={petColor?.hex || '#F4A460'} fur={pet.fur || 'short'} size={100} />
+                  ) : (
+                    <DogSprite color={petColor?.hex || '#B0A8A0'} fur={pet.fur || 'short'} size={100} />
+                  )}
+                  <span style={{ fontSize: 18, color: '#000', fontWeight: 700 }}>Zzz Zzz...</span>
+                </div>
+              )}
+
+              {/* Grid de atividades */}
+              {!insideActivity && (
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: 12,
+                  width: '100%',
+                  maxWidth: 300,
+                }}>
+                  <button
+                    onClick={handlePlayInside}
+                    style={{
+                      minWidth: 'auto',
+                      minHeight: 64,
+                      fontSize: 'var(--font-size-sm)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: 4,
+                      padding: '10px 16px',
+                    }}
+                    aria-label="Brincar com bolinha"
+                  >
+                    <span style={{ fontSize: 28 }}>&#9917;</span>
+                    Brincar
+                  </button>
+                  <button
+                    onClick={handleFeedInside}
+                    style={{
+                      minWidth: 'auto',
+                      minHeight: 64,
+                      fontSize: 'var(--font-size-sm)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: 4,
+                      padding: '10px 16px',
+                    }}
+                    aria-label="Dar comida"
+                  >
+                    <span style={{ fontSize: 28 }}>&#127860;</span>
+                    Comer
+                  </button>
+                  <button
+                    onClick={handleSleepInside}
+                    style={{
+                      minWidth: 'auto',
+                      minHeight: 64,
+                      fontSize: 'var(--font-size-sm)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: 4,
+                      padding: '10px 16px',
+                    }}
+                    aria-label="Dormir"
+                  >
+                    <span style={{ fontSize: 28 }}>&#128164;</span>
+                    Dormir
+                  </button>
+                  <button
+                    onClick={handlePetInsideHouse}
+                    style={{
+                      minWidth: 'auto',
+                      minHeight: 64,
+                      fontSize: 'var(--font-size-sm)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: 4,
+                      padding: '10px 16px',
+                    }}
+                    aria-label="Fazer carinho"
+                  >
+                    <span style={{ fontSize: 28 }}>&#10084;&#65039;</span>
+                    Carinho
+                  </button>
+                </div>
+              )}
+            </div>
+
             <button
               className="close-phase-btn"
               onClick={handleExitHouse}
-              style={{ minWidth: 160, minHeight: 60, fontSize: 'var(--font-size-md)' }}
+              style={{ minWidth: 160, minHeight: 60, fontSize: 'var(--font-size-md)', marginTop: 8 }}
             >
               SAIR DA CASINHA
             </button>

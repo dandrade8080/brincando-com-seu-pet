@@ -10,9 +10,9 @@
   --text-dark: #000000;
   --border-dark: #000000;
   --border-thick: 5px;
-  --btn-bg: #E8E8E8;
-  --btn-hover: #D4D4D4;
-  --btn-active: #BDBDBD;
+  --btn-bg: #333333;
+  --btn-hover: #555555;
+  --btn-active: #777777;
   --font-size-lg: clamp(26px, 5vw, 40px);
   --font-size-md: clamp(20px, 3.5vw, 30px);
   --font-size-sm: clamp(16px, 2.5vw, 22px);
@@ -45,13 +45,14 @@ button {
   border: var(--border-thick) solid var(--border-dark);
   border-radius: 12px;
   background: var(--btn-bg);
-  color: var(--text-dark);
+  color: #FFFFFF;
   cursor: pointer;
   min-width: 120px;
   min-height: 64px;
   padding: 14px 28px;
   outline: 3px solid transparent;
   outline-offset: 3px;
+  text-shadow: none;
 }
 
 button:focus-visible {
