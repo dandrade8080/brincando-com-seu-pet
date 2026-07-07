@@ -1,22 +1,22 @@
 /* ============================================================
-   ACESSIBILIDADE: fundo escuro suave (sem branco estourado),
-   fontes grandes, alto contraste, sem flash/pisca
+   ACESSIBILIDADE: fundo branco, alto contraste,
+   fontes grandes, elementos grandes, sem flash/pisca
    ============================================================ */
 
 :root {
-  --bg-main: #3a3a4a;
-  --bg-panel: #4a4a5a;
-  --text-main: #f0f0f0;
-  --text-dark: #1a1a1a;
+  --bg-main: #FFFFFF;
+  --bg-panel: #F5F5F5;
+  --text-main: #1A1A1A;
+  --text-dark: #000000;
   --border-dark: #000000;
-  --border-thick: 4px;
-  --btn-bg: #5a5a6a;
-  --btn-hover: #6a6a7a;
-  --btn-active: #8a8a9a;
-  --font-size-lg: clamp(20px, 3vw, 28px);
-  --font-size-md: clamp(16px, 2.5vw, 22px);
-  --font-size-sm: clamp(14px, 2vw, 18px);
-  --element-min-size: 90px;
+  --border-thick: 5px;
+  --btn-bg: #E8E8E8;
+  --btn-hover: #D4D4D4;
+  --btn-active: #BDBDBD;
+  --font-size-lg: clamp(26px, 5vw, 40px);
+  --font-size-md: clamp(20px, 3.5vw, 30px);
+  --font-size-sm: clamp(16px, 2.5vw, 22px);
+  --element-min-size: 130px;
 }
 
 * {
@@ -43,19 +43,19 @@ button {
   font-weight: 700;
   font-size: var(--font-size-md);
   border: var(--border-thick) solid var(--border-dark);
-  border-radius: 8px;
+  border-radius: 12px;
   background: var(--btn-bg);
-  color: var(--text-main);
+  color: var(--text-dark);
   cursor: pointer;
-  min-width: 100px;
-  min-height: 56px;
-  padding: 12px 24px;
-  outline: 2px solid transparent;
-  outline-offset: 2px;
+  min-width: 120px;
+  min-height: 64px;
+  padding: 14px 28px;
+  outline: 3px solid transparent;
+  outline-offset: 3px;
 }
 
 button:focus-visible {
-  outline: 4px solid #ffffff;
+  outline: 5px solid #000000;
 }
 
 button:hover {
@@ -74,21 +74,21 @@ button:active {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 16px;
-  gap: 16px;
+  padding: 20px;
+  gap: 20px;
 }
 
 .screen-title {
   font-size: var(--font-size-lg);
   text-align: center;
-  text-shadow: 2px 2px 0 #000000;
-  margin-bottom: 8px;
+  color: var(--text-dark);
+  margin-bottom: 12px;
 }
 
 .choice-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 24px;
   justify-content: center;
   align-items: center;
 }
@@ -98,20 +98,20 @@ button:active {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  min-width: 120px;
-  min-height: 140px;
-  padding: 16px;
+  gap: 12px;
+  min-width: 160px;
+  min-height: 180px;
+  padding: 20px;
   border: var(--border-thick) solid var(--border-dark);
-  border-radius: 12px;
+  border-radius: 16px;
   background: var(--bg-panel);
   cursor: pointer;
   transition: transform 0.15s, box-shadow 0.15s;
 }
 
 .choice-card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 16px rgba(255,255,255,0.2);
+  transform: scale(1.06);
+  box-shadow: 0 0 20px rgba(0,0,0,0.15);
 }
 
 .choice-card:active {
@@ -119,19 +119,20 @@ button:active {
 }
 
 .choice-card.selected {
-  border-color: #ffffff;
-  box-shadow: 0 0 0 4px #ffffff;
+  border-color: #000000;
+  box-shadow: 0 0 0 5px #000000;
+  background: #E8E8E8;
 }
 
 .choice-card .label {
   font-size: var(--font-size-md);
   text-align: center;
+  color: var(--text-dark);
 }
 
 .warning-text {
   font-size: var(--font-size-lg);
-  color: #ff4444;
-  text-shadow: 1px 1px 0 #000;
+  color: #CC0000;
   animation: warningPulse 1s ease-in-out infinite;
 }
 

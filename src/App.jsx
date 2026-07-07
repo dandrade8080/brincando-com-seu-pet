@@ -4,30 +4,30 @@ import ObjectSelection from './components/ObjectSelection';
 import MainFloor from './components/MainFloor';
 import PlayRoom from './components/PlayRoom';
 import useAudio from './hooks/useAudio';
+import useSpeech from './hooks/useSpeech';
 import './App.css';
 
-// Estado global do jogo (reseta ao recarregar a página - MVP sem persistência)
-
 export const DEFAULT_GAME_STATE = {
-  screen: 'petCreation', // petCreation | objectSelection | mainFloor | playRoom
+  screen: 'petCreation',
   pet: {
-    species: null,     // 'cat' | 'dog'
-    fur: null,         // 'short' | 'long'
-    color: null,       // { name, hex, lum }
+    species: null,
+    fur: null,
+    color: null,
   },
   objects: {
-    house: null,       // { name, hex, lum }
+    house: null,
     bed: null,
     waterBowl: null,
     foodBowl: null,
-    litterBox: null,   // só gato
-    mat: null,         // { name, hex, lum, patternIndex } - só cachorro
+    litterBox: null,
+    mat: null,
   },
 };
 
 export default function App() {
   const [gameState, setGameState] = useState(DEFAULT_GAME_STATE);
   const audio = useAudio();
+  const speech = useSpeech();
 
   const navigateTo = useCallback((screen) => {
     setGameState(prev => ({ ...prev, screen }));
@@ -36,8 +36,9 @@ export default function App() {
 
   const resetGame = useCallback(() => {
     audio.stopBGM();
+    speech.stop();
     setGameState(DEFAULT_GAME_STATE);
-  }, [audio]);
+  }, [audio, speech]);
 
   const renderScreen = () => {
     switch (gameState.screen) {
@@ -47,6 +48,7 @@ export default function App() {
             gameState={gameState}
             setGameState={setGameState}
             audio={audio}
+            speech={speech}
           />
         );
       case 'objectSelection':
@@ -55,6 +57,7 @@ export default function App() {
             gameState={gameState}
             setGameState={setGameState}
             audio={audio}
+            speech={speech}
           />
         );
       case 'mainFloor':
@@ -63,6 +66,7 @@ export default function App() {
             gameState={gameState}
             setGameState={setGameState}
             audio={audio}
+            speech={speech}
           />
         );
       case 'playRoom':
@@ -71,17 +75,17 @@ export default function App() {
             gameState={gameState}
             setGameState={setGameState}
             audio={audio}
+            speech={speech}
           />
         );
       default:
-        return <PetCreation gameState={gameState} setGameState={setGameState} audio={audio} />;
+        return <PetCreation gameState={gameState} setGameState={setGameState} audio={audio} speech={speech} />;
     }
   };
 
   return (
     <div className="app-container">
       {renderScreen()}
-      {/* Botão de mute sempre visível */}
       <button
         className="mute-btn"
         onClick={audio.toggleMute}
@@ -89,6 +93,15 @@ export default function App() {
         title={audio.muted ? 'Ativar som' : 'Desativar som'}
       >
         {audio.muted ? '🔇' : '🔊'}
+      </button>
+      <button
+        className="back-btn"
+        style={{ left: 'auto', right: '80px' }}
+        onClick={() => speech.speak('Você está no jogo Brincando com seu Pet. Toque nos botões grandes para jogar.')}
+        aria-label="Ouvir instruções"
+        title="Ouvir instruções"
+      >
+        🗣
       </button>
     </div>
   );

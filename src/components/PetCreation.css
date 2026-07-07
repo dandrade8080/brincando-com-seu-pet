@@ -2,33 +2,34 @@
   width: 100%;
   height: 100%;
   position: relative;
+  background: var(--bg-main);
 }
 
 .step-indicator {
   position: fixed;
-  bottom: 20px;
+  bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 12px;
+  gap: 16px;
   z-index: 10;
 }
 
 .step-dot {
-  width: 18px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
-  background: #555;
-  border: 3px solid #000;
+  background: #CCC;
+  border: var(--border-thick) solid #000;
   transition: background 0.3s;
 }
 
 .step-dot.active {
-  background: #fff;
-  border-color: #fff;
-  box-shadow: 0 0 8px rgba(255,255,255,0.5);
+  background: #000;
+  border-color: #000;
+  box-shadow: 0 0 12px rgba(0,0,0,0.4);
 }
 
 .label-icon {
-  font-size: 24px;
+  font-size: 36px;
 }
